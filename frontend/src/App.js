@@ -144,17 +144,17 @@ const App = () => {
                   <td className="border border-gray-300 p-2">{user.name}</td>
                   <td className="border border-gray-300 p-2">{user.socialHandle}</td>
                   <td className="border border-gray-300 p-2">
-                    {user.images && user.images.length > 0 ? (
-                      user.images.map((image, index) => (
-                        <a
-                          key={index}
-                          href={`http://localhost:5000/${image.path}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-500 underline block">
-                          {image.filename}
-                        </a>
-                      ))
+                    {user.image ? (
+                      <img
+                        src={`data:image/png;base64,${btoa(
+                          new Uint8Array(user.image.data).reduce(
+                            (data, byte) => data + String.fromCharCode(byte),
+                            ""
+                          )
+                        )}`}
+                        alt="User Upload"
+                        className="w-20 h-20 object-cover rounded-lg"
+                      />
                     ) : (
                       <span>No images uploaded</span>
                     )}

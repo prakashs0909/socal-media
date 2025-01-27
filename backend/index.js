@@ -5,6 +5,7 @@ const multer = require("multer");
 var cors = require('cors');
 const Data = require("./models/Data");
 const { body, validationResult } = require("express-validator");
+const fs = require('fs');
 
 connectToMongo();
 
@@ -15,6 +16,7 @@ app.use(cors());
 app.use(express.json());
 // app.use("/uploads", express.static("uploads"));
 
+const storage = multer.memoryStorage(); // Switch to memoryStorage
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
@@ -25,11 +27,9 @@ app.use(express.json());
 //   },
 // });
 
-// const upload = multer({ storage });
+const upload = multer({ storage });
 
-// app.post(
-//   "/api/form",
-//   upload.array("images"), 
+// app.post("/api/form", upload.array("images"), 
 //   [body("name", "Enter a valid name").isLength({ min: 2 })],
 //   async (req, res) => {
 //     try {
@@ -66,19 +66,38 @@ app.use(express.json());
 //   }
 // );
 
+app.post('/api/form', upload.single('images'), async (req, res) => {
+  try {
+    const newData = new Data({
+      name: req.body.name,
+      socialHandle: req.body.socialHandle,
+      image: req.file.buffer,
+    });
 
-// app.get("/api/fetchallUser", async (req, res) => {
-//   try {
-//     const user = await Data.find();
-//     res.json(user);
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).send("Internal server error");
-//   }
-// });
+    const savedData = await newData.save();
+
+    res.status(201).json({
+      message: 'Profile and images uploaded successfully',
+      data: savedData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Server error: Unable to save data' });
+  }
+});
+
+app.get("/api/fetchallUser", async (req, res) => {
+  try {
+    const user = await Data.find();
+    res.json(user);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal server error");
+  }
+});
 
 app.get("/", async (req, res) => {
-  console.log("Server has been started");
+  res.send("Server has been started");
 });
 
 app.listen(port, () => {
