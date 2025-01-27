@@ -66,6 +66,10 @@ app.post(
   }
 );
 
+app.get("/", async (req, res) => {
+  console.log("Server has been started");
+});
+
 app.get("/api/fetchallUser", async (req, res) => {
   try {
     const user = await Data.find();
