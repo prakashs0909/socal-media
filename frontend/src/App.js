@@ -156,7 +156,7 @@ const App = () => {
                             )
                           )}`}
                           alt="User Image"
-                          className="w-10 h-10 rounded-full object-cover"
+                          className="w-20 h-20 m-5 inline rounded object-cover"
                         />
                       ))
                     ) : (
