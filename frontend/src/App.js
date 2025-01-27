@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const App = () => {
-  const host = "http://localhost:5000";
+  const host = "https://socal-media-one.vercel.app";
   const [formData, setFormData] = useState({
     name: "",
     socialHandle: "",
@@ -18,6 +18,7 @@ const App = () => {
         setLoading(true);
         const res = await axios.get(`${host}/api/fetchallUser`);
         setUsers(res.data);
+        console.log(res.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -144,17 +145,20 @@ const App = () => {
                   <td className="border border-gray-300 p-2">{user.name}</td>
                   <td className="border border-gray-300 p-2">{user.socialHandle}</td>
                   <td className="border border-gray-300 p-2">
-                    {user.image ? (
-                      <img
-                        src={`data:image/png;base64,${btoa(
-                          new Uint8Array(user.image.data).reduce(
-                            (data, byte) => data + String.fromCharCode(byte),
-                            ""
-                          )
-                        )}`}
-                        alt="User Upload"
-                        className="w-20 h-20 object-cover rounded-lg"
-                      />
+                    {user.image && user.image.length > 0 ? (
+                      user.image.map((img, index) => (
+                        <img
+                          key={index}
+                          src={`data:image/png;base64,${btoa(
+                            new Uint8Array(img.data).reduce(
+                              (data, byte) => data + String.fromCharCode(byte),
+                              ""
+                            )
+                          )}`}
+                          alt="User Image"
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      ))
                     ) : (
                       <span>No images uploaded</span>
                     )}

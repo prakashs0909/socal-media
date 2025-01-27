@@ -25,10 +25,10 @@ const DataSchema = new Schema({
         type: String,
         required: true,
       },
-      image: {
+      image: [{
         type: Buffer,
         required: true,
-      },
+      }],
     
 });
 const Data = mongoose.model("data", DataSchema);

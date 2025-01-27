@@ -27,7 +27,7 @@ const storage = multer.memoryStorage(); // Switch to memoryStorage
 //   },
 // });
 
-const upload = multer({ storage });
+const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024} }); // 10MB limit
 
 // app.post("/api/form", upload.array("images"), 
 //   [body("name", "Enter a valid name").isLength({ min: 2 })],
@@ -66,12 +66,13 @@ const upload = multer({ storage });
 //   }
 // );
 
-app.post('/api/form', upload.single('images'), async (req, res) => {
+app.post('/api/form', upload.array('images'), async (req, res) => {
   try {
+    const images = req.files.map(file => file.buffer);
     const newData = new Data({
       name: req.body.name,
       socialHandle: req.body.socialHandle,
-      image: req.file.buffer,
+      image: images,
     });
 
     const savedData = await newData.save();
